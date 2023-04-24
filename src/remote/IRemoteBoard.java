@@ -4,5 +4,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IRemoteBoard extends Remote {
-    public String sayHello(String who) throws RemoteException;
+    public String sayHello(IRemoteClient who) throws RemoteException;
 }
