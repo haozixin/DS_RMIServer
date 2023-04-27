@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class BoardServant extends UnicastRemoteObject implements IRemoteBoard {
+    private Manager manager;
+
 
 
     public BoardServant() throws RemoteException {
