@@ -35,9 +35,9 @@ public class Server {
         }
 
         try {
-            Registry registry = LocateRegistry.createRegistry(serverPort); // Create the registry on the server
             IRemoteBoard server = new RemoteBoardObj(); // Create a remote object, 因为继承了UnicastRemoteObject
-            registry.rebind(PropertiesUtil.getConfig(S,PropertiesUtil.SERVER_CONFIG_PROPERTIES), server); // Bind the remote object's stub in the registry
+            Registry registry = LocateRegistry.createRegistry(serverPort); // Create the registry on the server
+            registry.bind(PropertiesUtil.getConfig(S,PropertiesUtil.SERVER_CONFIG_PROPERTIES), server); // Bind the remote object's stub in the registry
             System.out.println("(\"Remote object bound to registry.\")  HellowWorld RMI Server is running...(listening on port " + serverPortStr + ")");
         } catch (Exception e) {
             e.printStackTrace();
