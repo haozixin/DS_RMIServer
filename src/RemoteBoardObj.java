@@ -43,6 +43,57 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
             return false;
         }
     }
+
+    /**
+     * close board and notify all users
+     * @param managerName
+     * @return
+     * @throws RemoteException
+     */
+    @Override
+    public boolean closeAndNotifyAllUsers(String managerName) throws RemoteException {
+        boolean isSuccessful = true;
+        if (managerName == null) {
+            return false;
+        }
+        ArrayList<IRemoteClient> temp = new ArrayList<>(clientList);
+        System.out.println("The size of client list is: "+temp.size());
+        for (IRemoteClient client:temp) {
+            if (!client.isManager()) {
+                System.out.println("remove client - "+client.getName());
+                // notify the client
+                client.getNotificationAndClose(managerName + "(Manager) has closed the board");
+            }else{
+                System.out.println("removed manager - "+client.getName());
+                // manager is removed, doesn't need to be notified, since only manager can close the board(call the method)
+            }
+            clientList.remove(client);
+        }
+        System.out.println("The size of client list is: "+clientList.size());
+        return isSuccessful;
+    }
+
+    /**
+     * remove the user from client list
+     * @param userName
+     * @return
+     * @throws RemoteException
+     */
+    @Override
+    public boolean existBoard(String userName) throws RemoteException {
+        if (userName == null) {
+            return false;
+        }
+        for (IRemoteClient client:clientList) {
+            if (client.getName().equals(userName)) {
+                System.out.println("client - "+client.getName()+", has leaved the board");
+                clientList.remove(client);
+                return true;
+            }
+        }
+        System.out.println("The size of client list is: "+clientList.size());
+        return false;
+    }
 }
 
-
+//TODO: 1. 关闭窗口发动方法，让server去掉这个client
