@@ -12,4 +12,6 @@ public interface IRemoteClient extends Remote {
     boolean isManager();
 
     String getName();
+
+    boolean askJoin(String name);
 }

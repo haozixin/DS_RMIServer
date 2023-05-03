@@ -31,6 +31,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
 
     @Override
     public synchronized boolean createOrJoinBoard(IRemoteClient user) throws RemoteException {
+
         // create board; true is manager
         if (clientList.size()==0) {
             user.setManager(true);
@@ -39,9 +40,24 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
         }
         // join board; false is user (not manager)
         else {
-            clientList.add(user);
+            user.setManager(false);
+            if (managerAgreeJoin(user.getName())) {
+                clientList.add(user);
+                return true;
+            }
             return false;
         }
+    }
+
+
+
+    private boolean managerAgreeJoin(String joinUserName) throws RemoteException {
+        for(IRemoteClient client:clientList){
+            if(client.isManager()){
+                return client.askJoin(joinUserName);
+            }
+        }
+        return false;
     }
 
     /**
@@ -57,7 +73,6 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
             return false;
         }
         ArrayList<IRemoteClient> temp = new ArrayList<>(clientList);
-        System.out.println("The size of client list is: "+temp.size());
         for (IRemoteClient client:temp) {
             clientList.remove(client);
             if (!client.isManager()) {
@@ -69,7 +84,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
                 // manager is removed, doesn't need to be notified, since only manager can close the board(call the method)
             }
         }
-        System.out.println("The size of client list is: "+clientList.size());
+        System.out.println("closeAndNotifyAllUsers: The size of client list is: "+clientList.size());
         return isSuccessful;
     }
 
@@ -91,7 +106,17 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
                 return true;
             }
         }
-        System.out.println("The size of client list is: "+clientList.size());
+        System.out.println("existBoard: The size of client list is: "+clientList.size());
+        return false;
+    }
+
+    @Override
+    public boolean isRepeated(String name) {
+        for (IRemoteClient client:clientList) {
+            if (client.getName().equals(name)) {
+                return true;
+            }
+        }
         return false;
     }
 }
