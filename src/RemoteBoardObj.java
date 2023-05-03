@@ -52,7 +52,6 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
      */
     @Override
     public boolean closeAndNotifyAllUsers(String managerName) throws RemoteException {
-        System.out.println("The thread in closeAndNotifyAllUsers is: "+Thread.currentThread().getName());
         boolean isSuccessful = true;
         if (managerName == null) {
             return false;
@@ -97,4 +96,4 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
     }
 }
 
-//TODO: 1. 关闭窗口发动方法，让server去掉这个client
+
