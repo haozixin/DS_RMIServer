@@ -52,6 +52,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
      */
     @Override
     public boolean closeAndNotifyAllUsers(String managerName) throws RemoteException {
+        System.out.println("The thread in closeAndNotifyAllUsers is: "+Thread.currentThread().getName());
         boolean isSuccessful = true;
         if (managerName == null) {
             return false;
@@ -59,6 +60,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
         ArrayList<IRemoteClient> temp = new ArrayList<>(clientList);
         System.out.println("The size of client list is: "+temp.size());
         for (IRemoteClient client:temp) {
+            clientList.remove(client);
             if (!client.isManager()) {
                 System.out.println("remove client - "+client.getName());
                 // notify the client
@@ -67,7 +69,6 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
                 System.out.println("removed manager - "+client.getName());
                 // manager is removed, doesn't need to be notified, since only manager can close the board(call the method)
             }
-            clientList.remove(client);
         }
         System.out.println("The size of client list is: "+clientList.size());
         return isSuccessful;
