@@ -120,6 +120,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
                 System.out.println("client - "+client.getName()+", has leaved the board");
                 clientList.remove(client);
                 updateUserList();
+                client.close();
                 System.out.println("existBoard: The size of client list is: "+clientList.size());
                 return true;
             }

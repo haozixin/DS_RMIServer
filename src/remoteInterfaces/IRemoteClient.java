@@ -17,4 +17,5 @@ public interface IRemoteClient extends Remote {
     boolean askJoin(String name);
 
     void updateUserList(ArrayList<String> userList);
+    void close();
 }
