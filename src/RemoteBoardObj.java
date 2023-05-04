@@ -1,6 +1,7 @@
 import remoteInterfaces.IRemoteBoard;
 import remoteInterfaces.IRemoteClient;
 
+import java.awt.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -99,7 +100,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
                 // manager is removed, doesn't need to be notified, since only manager can close the board(call the method)
             }
         }
-        System.out.println("closeAndNotifyAllUsers: The size of client list is: " + clientList.size());
+        System.out.println("The size of client list is: " + clientList.size());
         return isSuccessful;
     }
 
@@ -146,8 +147,17 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
                 client.getNotificationAndClose("You are kicked out by manager");
                 clientList.remove(client);
                 updateUserList();
-                System.out.println(name+" is kicked out; The size of client list is: " + clientList.size());
+                System.out.println(name + " is kicked out; The size of client list is: " + clientList.size());
                 return;
+            }
+        }
+    }
+
+    @Override
+    public void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw) throws RemoteException {
+        for (IRemoteClient client : clientList) {
+            if (!client.getName().equals(name)) {
+                client.draw(mode, start, end, color, textDraw);
             }
         }
     }

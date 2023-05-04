@@ -1,5 +1,6 @@
 package remoteInterfaces;
 
+import java.awt.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -13,4 +14,5 @@ public interface IRemoteBoard extends Remote {
     boolean isRepeated(String name) throws RemoteException;
 
     void kickOut(String name)throws RemoteException;
+    void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw)throws RemoteException;
 }

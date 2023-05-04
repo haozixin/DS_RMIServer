@@ -1,5 +1,6 @@
 package remoteInterfaces;
 
+import java.awt.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -18,4 +19,6 @@ public interface IRemoteClient extends Remote {
 
     void updateUserList(ArrayList<String> userList);
     void close();
+
+    void draw(String mode, Point start, Point end, Color color, String textDraw);
 }
