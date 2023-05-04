@@ -2,6 +2,7 @@ package remoteInterfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface IRemoteClient extends Remote {
     void sendMessageLocally(String msg);
@@ -14,4 +15,6 @@ public interface IRemoteClient extends Remote {
     String getName();
 
     boolean askJoin(String name);
+
+    void updateUserList(ArrayList<String> userList);
 }

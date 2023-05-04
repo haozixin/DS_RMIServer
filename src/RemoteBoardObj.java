@@ -36,6 +36,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
         if (clientList.size()==0) {
             user.setManager(true);
             clientList.add(user);
+            updateUserList();
             return true;
         }
         // join board; false is user (not manager)
@@ -43,9 +44,24 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
             user.setManager(false);
             if (managerAgreeJoin(user.getName())) {
                 clientList.add(user);
+                updateUserList();
                 return true;
             }
             return false;
+        }
+    }
+
+    private void updateUserList(){
+        ArrayList<String> userList = new ArrayList<>();
+        for (IRemoteClient client:clientList) {
+            if (client.isManager()) {
+                userList.add(client.getName()+"(Manager)");
+                continue;
+            }
+            userList.add(client.getName());
+        }
+        for (IRemoteClient client:clientList) {
+            client.updateUserList(userList);
         }
     }
 
@@ -103,6 +119,8 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
             if (client.getName().equals(userName)) {
                 System.out.println("client - "+client.getName()+", has leaved the board");
                 clientList.remove(client);
+                updateUserList();
+                System.out.println("existBoard: The size of client list is: "+clientList.size());
                 return true;
             }
         }
