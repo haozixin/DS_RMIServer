@@ -2,10 +2,9 @@ package remoteInterfaces;
 
 import java.awt.*;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-public interface IRemoteClient extends Remote {
+public interface IRemoteServiceStub extends Remote {
     void sendMessageLocally(String msg);
     public void setManager(boolean isManager);
 
@@ -21,4 +20,6 @@ public interface IRemoteClient extends Remote {
     void close();
 
     void draw(String mode, Point start, Point end, Color color, String textDraw);
+
+    void newCanvas();
 }

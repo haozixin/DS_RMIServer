@@ -1,11 +1,6 @@
-import remoteInterfaces.IRemoteBoard;
+import remoteInterfaces.IRemoteServiceSkeleton;
 import utils.PropertiesUtil;
 
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -35,7 +30,7 @@ public class Server {
         }
 
         try {
-            IRemoteBoard server = new RemoteBoardObj(); // Create a remote object, 因为继承了UnicastRemoteObject
+            IRemoteServiceSkeleton server = new RemoteServiceSkeletonObj(); // Create a remote object, 因为继承了UnicastRemoteObject
             Registry registry = LocateRegistry.createRegistry(serverPort); // Create the registry on the server
             registry.bind(PropertiesUtil.getConfig(S,PropertiesUtil.SERVER_CONFIG_PROPERTIES), server); // Bind the remote object's stub in the registry
             System.out.println("(\"Remote object bound to registry.\")  HellowWorld RMI Server is running...(listening on port " + serverPortStr + ")");

@@ -1,18 +1,18 @@
-import remoteInterfaces.IRemoteBoard;
-import remoteInterfaces.IRemoteClient;
+import remoteInterfaces.IRemoteServiceSkeleton;
+import remoteInterfaces.IRemoteServiceStub;
 
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard {
-    private ArrayList<IRemoteClient> clientList = new ArrayList<>();
+public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRemoteServiceSkeleton {
+    private ArrayList<IRemoteServiceStub> clientList = new ArrayList<>();
     // messages are share resources
     private ArrayList<String> messages = new ArrayList<>();
 
 
-    public RemoteBoardObj() throws RemoteException {
+    public RemoteServiceSkeletonObj() throws RemoteException {
         super();
     }
 
@@ -23,14 +23,14 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
         }
         String msg = username + ": " + message;
         messages.add(msg);
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             client.sendMessageLocally(msg);
         }
         return true;
     }
 
     @Override
-    public synchronized boolean createOrJoinBoard(IRemoteClient user) throws RemoteException {
+    public synchronized boolean createOrJoinBoard(IRemoteServiceStub user) throws RemoteException {
 
         // create board; true is manager
         if (clientList.size() == 0) {
@@ -53,21 +53,21 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
 
     private void updateUserList() {
         ArrayList<String> userList = new ArrayList<>();
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             if (client.isManager()) {
                 userList.add(client.getName() + "(Manager)");
                 continue;
             }
             userList.add(client.getName());
         }
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             client.updateUserList(userList);
         }
     }
 
 
     private boolean managerAgreeJoin(String joinUserName) throws RemoteException {
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             if (client.isManager()) {
                 return client.askJoin(joinUserName);
             }
@@ -88,8 +88,8 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
         if (managerName == null) {
             return false;
         }
-        ArrayList<IRemoteClient> temp = new ArrayList<>(clientList);
-        for (IRemoteClient client : temp) {
+        ArrayList<IRemoteServiceStub> temp = new ArrayList<>(clientList);
+        for (IRemoteServiceStub client : temp) {
             clientList.remove(client);
             if (!client.isManager()) {
                 System.out.println("remove client - " + client.getName());
@@ -116,7 +116,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
         if (userName == null) {
             return false;
         }
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             if (client.getName().equals(userName)) {
                 System.out.println("client - " + client.getName() + ", has leaved the board");
                 clientList.remove(client);
@@ -132,7 +132,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
 
     @Override
     public boolean isRepeated(String name) {
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             if (client.getName().equals(name)) {
                 return true;
             }
@@ -142,7 +142,7 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
 
     @Override
     public void kickOut(String name) throws RemoteException {
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             if (client.getName().equals(name)) {
                 client.getNotificationAndClose("You are kicked out by manager");
                 clientList.remove(client);
@@ -155,10 +155,17 @@ public class RemoteBoardObj extends UnicastRemoteObject implements IRemoteBoard 
 
     @Override
     public void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw) throws RemoteException {
-        for (IRemoteClient client : clientList) {
+        for (IRemoteServiceStub client : clientList) {
             if (!client.getName().equals(name)) {
                 client.draw(mode, start, end, color, textDraw);
             }
+        }
+    }
+
+    @Override
+    public void newCanvas() throws RemoteException {
+        for (IRemoteServiceStub client : clientList) {
+            client.newCanvas();
         }
     }
 }
