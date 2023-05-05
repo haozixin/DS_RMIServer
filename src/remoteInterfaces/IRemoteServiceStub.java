@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface IRemoteServiceStub extends Remote {
     void sendMessageLocally(String msg);
-    public void setManager(boolean isManager);
+    void setManager(boolean isManager);
 
     void getNotificationAndClose(String s);
 
