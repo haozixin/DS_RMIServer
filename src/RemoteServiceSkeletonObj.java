@@ -2,6 +2,7 @@ import remoteInterfaces.IRemoteServiceSkeleton;
 import remoteInterfaces.IRemoteServiceStub;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -167,6 +168,11 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
         for (IRemoteServiceStub client : clientList) {
             client.newCanvas();
         }
+    }
+
+    @Override
+    public boolean synImage(String name) throws RemoteException {
+        return true;
     }
 }
 
