@@ -6,6 +6,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+/**
+ * Author:  Zixin Hao
+ * Student ID: 1309180
+ */
 public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRemoteServiceSkeleton {
     private ArrayList<IRemoteServiceStub> clientList = new ArrayList<>();
     // messages are share resources

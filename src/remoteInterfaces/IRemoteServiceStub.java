@@ -4,6 +4,10 @@ import java.awt.*;
 import java.rmi.Remote;
 import java.util.ArrayList;
 
+/**
+ * Author:  Zixin Hao
+ * Student ID: 1309180
+ */
 public interface IRemoteServiceStub extends Remote {
     void sendMessageLocally(String msg);
     void setManager(boolean isManager);

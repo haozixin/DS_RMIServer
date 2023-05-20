@@ -3,7 +3,10 @@ package remoteInterfaces;
 import java.awt.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
+/**
+ * Author:  Zixin Hao
+ * Student ID: 1309180
+ */
 public interface IRemoteServiceSkeleton extends Remote {
     boolean broadcastMessage(String username, String message) throws RemoteException;
     boolean createOrJoinBoard(IRemoteServiceStub user) throws RemoteException;

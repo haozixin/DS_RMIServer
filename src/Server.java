@@ -4,7 +4,10 @@ import utils.PropertiesUtil;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-
+/**
+ * Author:  Zixin Hao
+ * Student ID: 1309180
+ */
 public class Server {
     private static final String S = "serviceName";
     public static void main(String[] args) {
