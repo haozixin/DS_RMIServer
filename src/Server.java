@@ -38,7 +38,7 @@ public class Server {
             registry.bind(PropertiesUtil.getConfig(S,PropertiesUtil.SERVER_CONFIG_PROPERTIES), server); // Bind the remote object's stub in the registry
             System.out.println("(\"Remote object bound to registry.\")  HellowWorld RMI Server is running...(listening on port " + serverPortStr + ")");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Something wrong with binding services");
         }
     }
 }
