@@ -16,7 +16,8 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
     private ArrayList<IRemoteServiceStub> clientList = new ArrayList<>();
     // messages are share resources
     private ArrayList<String> messages = new ArrayList<>();
-    private ArrayList<ArrayList<String>> drawOptionsList = new ArrayList<>();
+    private String managerName;
+
 
 
     public RemoteServiceSkeletonObj() throws RemoteException {
@@ -44,6 +45,7 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
             user.setManager(true);
             clientList.add(user);
             updateUserList();
+            managerName = user.getName();
             return true;
         }
         // join board; false is user (not manager)
@@ -162,15 +164,6 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
 
     @Override
     public synchronized void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw) throws RemoteException {
-        ArrayList<String> drawOptions = new ArrayList<>();
-        drawOptions.add(mode);
-        drawOptions.add(String.valueOf(start.x));
-        drawOptions.add(String.valueOf(start.y));
-        drawOptions.add(String.valueOf(end.x));
-        drawOptions.add(String.valueOf(end.y));
-        drawOptions.add(String.valueOf(color.getRGB()));
-        drawOptions.add(textDraw);
-        drawOptionsList.add(drawOptions);
         for (IRemoteServiceStub client : clientList) {
             if (!client.getName().equals(name)) {
                 client.draw(mode, start, end, color, textDraw);
@@ -180,30 +173,45 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
 
     @Override
     public void newCanvas() throws RemoteException {
-        drawOptionsList.clear();
+//        drawOptionsList.clear();
         for (IRemoteServiceStub client : clientList) {
             client.newCanvas();
+
         }
     }
 
     @Override
     public boolean synImage(String name) throws RemoteException {
         boolean isSuccessful = false;
+        byte[] imageByte = null;
         for (IRemoteServiceStub client : clientList) {
-            if (client.getName().equals(name)) {
-                for (ArrayList<String> drawOptions : drawOptionsList) {
-                    String mode = drawOptions.get(0);
-                    Point start = new Point(Integer.parseInt(drawOptions.get(1)), Integer.parseInt(drawOptions.get(2)));
-                    Point end = new Point(Integer.parseInt(drawOptions.get(3)), Integer.parseInt(drawOptions.get(4)));
-                    Color color = new Color(Integer.parseInt(drawOptions.get(5)));
-                    String textDraw = drawOptions.get(6);
-                    client.draw(mode, start, end, color, textDraw);
-                }
+            if(client.getName().equals(managerName)){
+                imageByte = client.sendImage(null);
+            }
+            if (client.getName().equals(name) && imageByte != null) {
+                client.receiveImage(imageByte);
                 isSuccessful = true;
                 break;
             }
         }
         return isSuccessful;
+    }
+
+    @Override
+    public void loadImage(String name, String path) throws RemoteException {
+        byte[] imageBytes;
+        for (IRemoteServiceStub client : clientList) {
+            if (client.getName().equals(name)) {
+                imageBytes = client.sendImage(path);
+                for (IRemoteServiceStub other : clientList) {
+                    if (!other.getName().equals(name)) {
+                        other.receiveImage(imageBytes);
+                    }
+                }
+                break;
+            }
+        }
+
     }
 }
 

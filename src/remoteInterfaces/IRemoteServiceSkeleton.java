@@ -20,4 +20,5 @@ public interface IRemoteServiceSkeleton extends Remote {
     void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw)throws RemoteException;
     void newCanvas()throws RemoteException;
     boolean synImage(String name)throws RemoteException;
+    void loadImage(String name, String path)throws RemoteException;
 }

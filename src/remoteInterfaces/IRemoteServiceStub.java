@@ -2,6 +2,7 @@ package remoteInterfaces;
 
 import java.awt.*;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
@@ -26,4 +27,8 @@ public interface IRemoteServiceStub extends Remote {
     void draw(String mode, Point start, Point end, Color color, String textDraw);
 
     void newCanvas();
+
+
+    void receiveImage(byte[] imageBytes);
+    byte[] sendImage(String filePath);
 }
