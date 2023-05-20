@@ -2,9 +2,11 @@ import remoteInterfaces.IRemoteServiceSkeleton;
 import remoteInterfaces.IRemoteServiceStub;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Dictionary;
 
 /**
  * Author:  Zixin Hao
@@ -14,6 +16,7 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
     private ArrayList<IRemoteServiceStub> clientList = new ArrayList<>();
     // messages are share resources
     private ArrayList<String> messages = new ArrayList<>();
+    private ArrayList<ArrayList<String>> drawOptionsList = new ArrayList<>();
 
 
     public RemoteServiceSkeletonObj() throws RemoteException {
@@ -159,6 +162,15 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
 
     @Override
     public void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw) throws RemoteException {
+        ArrayList<String> drawOptions = new ArrayList<>();
+        drawOptions.add(mode);
+        drawOptions.add(String.valueOf(start.x));
+        drawOptions.add(String.valueOf(start.y));
+        drawOptions.add(String.valueOf(end.x));
+        drawOptions.add(String.valueOf(end.y));
+        drawOptions.add(String.valueOf(color.getRGB()));
+        drawOptions.add(textDraw);
+        drawOptionsList.add(drawOptions);
         for (IRemoteServiceStub client : clientList) {
             if (!client.getName().equals(name)) {
                 client.draw(mode, start, end, color, textDraw);
@@ -168,9 +180,30 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
 
     @Override
     public void newCanvas() throws RemoteException {
+        drawOptionsList.clear();
         for (IRemoteServiceStub client : clientList) {
             client.newCanvas();
         }
+    }
+
+    @Override
+    public boolean synImage(String name) throws RemoteException {
+        boolean isSuccessful = false;
+        for (IRemoteServiceStub client : clientList) {
+            if (client.getName().equals(name)) {
+                for (ArrayList<String> drawOptions : drawOptionsList) {
+                    String mode = drawOptions.get(0);
+                    Point start = new Point(Integer.parseInt(drawOptions.get(1)), Integer.parseInt(drawOptions.get(2)));
+                    Point end = new Point(Integer.parseInt(drawOptions.get(3)), Integer.parseInt(drawOptions.get(4)));
+                    Color color = new Color(Integer.parseInt(drawOptions.get(5)));
+                    String textDraw = drawOptions.get(6);
+                    client.draw(mode, start, end, color, textDraw);
+                }
+                isSuccessful = true;
+                break;
+            }
+        }
+        return isSuccessful;
     }
 }
 
