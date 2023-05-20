@@ -161,7 +161,7 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
     }
 
     @Override
-    public void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw) throws RemoteException {
+    public synchronized void synDraw(String name, String mode, Point start, Point end, Color color, String textDraw) throws RemoteException {
         ArrayList<String> drawOptions = new ArrayList<>();
         drawOptions.add(mode);
         drawOptions.add(String.valueOf(start.x));
