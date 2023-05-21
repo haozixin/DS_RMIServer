@@ -173,10 +173,11 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
 
     @Override
     public void newCanvas() throws RemoteException {
-//        drawOptionsList.clear();
+
         for (IRemoteServiceStub client : clientList) {
-            client.newCanvas();
-            client.jumpNotification("Manager has created a new canvas");
+            if (!client.isManager()) {
+                client.newCanvas();
+            }
         }
     }
 
@@ -207,7 +208,6 @@ public class RemoteServiceSkeletonObj extends UnicastRemoteObject implements IRe
                     if (!other.getName().equals(name)) {
                         other.receiveImage(imageBytes);
                     }
-                    other.jumpNotification("Manager has opened a new image");
                 }
                 break;
             }
